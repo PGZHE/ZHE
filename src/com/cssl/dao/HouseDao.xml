@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace就是接口的全路径 -->
+<mapper namespace="com.cssl.dao.HouseDao">
+	
+	<!-- 添加新的房屋 -->
+	<insert id="insertFaBu" >
+	INSERT INTO `renting`.`house` (`hname`, `hmianji`, `hqian`, `did`, `sid`, `tid`, `shijian`, `dianhua`, `xiangxi`)
+	VALUES
+	(#{hname},#{hmianji},#{hqian},#{did},#{sid},#{tid},#{shijian},#{dianhua},#{xiangxi})
+	</insert>
+	
+	<!-- 查询房屋类型 -->
+	<select id="selectType" resultType="type">
+	select * from type	
+	</select>
+	
+	<!--查询区域-->
+	<select id="selectDistrict" resultType="district"> 
+	select * from district
+	</select>
+	
+	<!--查询街道-->
+	<select id="slectStreet" resultType="street">
+	SELECT * FROM street
+	</select>
+	
+	<!-- 根据区域查询街道 -->
+	<select id="selectQuJie" resultType="street">
+	SELECT * FROM street where did=#{id}
+	</select>
+	
+	<!-- 查询全部房屋信息 -->
+	<select id="selectHouse" resultType="house">
+	SELECT * FROM house LIMIT #{index},#{size}
+	</select>
+	
+	<!-- 查询房屋总记录数 -->
+	<select id="countHouse" resultType="int">
+	SELECT COUNT(*) FROM house 
+	</select>
+	
+	<!-- 加载指定的房屋详细信息 -->
+	<select id="selectZDHouse" resultType="house">
+	select * from house where hid=#{id}
+	</select>
+	
+	<!-- 修改指定房屋详细信息 -->
+	<update id="updateHouse" parameterType="house">
+	UPDATE `renting`.`house` SET hname = #{hname} , hmianji = #{hmianji} , hqian = #{hqian} , did = #{did} , 
+	sid = #{sid} , 
+	tid = #{tid} , 
+	shijian = #{shijian} , 
+	dianhua = #{dianhua} , 
+	xiangxi = #{xiangxi}
+	
+	WHERE
+	hid = #{hid} 
+	</update>
+
+	<!-- 删除指定房屋信息 -->
+	<delete id="deleteHouse" parameterType="int">
+	DELETE FROM `renting`.`house` 
+	WHERE
+	hid = #{hid} 
+	</delete>
+	
+	<!-- 带条件查询房屋信息 -->
+	<select id="selectTJHouse" resultType="house">
+	select * from house
+	<where>
+	
+	<if test="hname!=null and hname!=''"><!-- 模糊查询房屋名称 -->
+	<bind name="name" value="'%'+hname+'%'"/><!--value直接使用属性名-->
+		and hname like #{name}
+	</if>
+	
+	<if test="did!=null and did!=0"><!-- 根据区域查询 -->
+		and did=#{did}
+	</if>
+	
+	<if test="sid!=null and sid!=0"><!-- 根据街道查询 -->
+		and sid=#{sid}
+	</if>
+	
+	<if test="tid!=null and tid!=0"><!-- 根据房屋类型查询 -->
+		and tid=#{tid}
+	</if>
+	
+	<if test="hqian==99"><!-- 根据租金查询 -->
+		and hqian &lt; 100
+	</if>
+	<if test="hqian==150">
+		and hqian &gt; 100 or hqian &lt; 200
+	</if>
+	<if test="hqian==200">
+		and hqian&gt;200
+	</if>
+	
+	<if test="hmianji==39"><!-- 根据房屋面积查询 -->
+		and hmianji&lt;40
+	</if>
+	<if test="hmianji==200">
+		and hmianji&lt;40 or hmianji &gt;500
+	</if>
+	<if test="hmianji==500">
+		and hmianji &gt; 500
+	</if>
+	
+	</where>
+	<!-- 分页 
+	LIMIT #{i},#{s}
+	-->
+	</select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace就是接口的全路径 -->
+<mapper namespace="com.cssl.dao.UserDao">
+	
+	<!-- 判断用户登陆 -->
+	<select id="selectPd" resultType="int">
+	SELECT count(*) FROM `user` WHERE uname=#{uname} AND upwd=#{upwd}
+	</select>
+
+	<!-- 用户注册 -->
+	<insert id="insertUser" parameterType="user">
+	INSERT INTO `renting`.`user` (`uname`, `upwd`, `uqrpwd`, `dianhua`, `uxingming`)
+	VALUES(#{uname},#{upwd},#{uqrpwd},#{dianhua},#{uxingming})
+	</insert>
+		
+	<!-- 判断用户是管理员还是普通用户 -->
+	<select id="selectGl" resultType="int">
+	SELECT gl FROM `user` WHERE uname=#{name}
+	</select>
+</mapper>
